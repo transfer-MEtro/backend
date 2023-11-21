@@ -2,7 +2,8 @@ import os
 import requests
 import datetime
 
-user_key = '7a56424b6173756e333449616b4563'
+# Get key here: https://data.seoul.go.kr/dataList/OA-12764/F/1/datasetView.do
+user_key = 'your_key_here'
 station = '신촌'
 url = f'http://swopenAPI.seoul.go.kr/api/subway/{user_key}/json/realtimeStationArrival/0/30/{station}'
 
