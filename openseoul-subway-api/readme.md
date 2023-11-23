@@ -34,6 +34,15 @@ The TOPIS API can be called as follows for the Seoul Metro Station.
 | 20 |	arvlMsg3 |	두번째도착메세지 (종합운동장 도착, 12분 후 (광명사거리) 등) |
 | 21 |	arvlCd |	도착코드 (0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중) |
 
+### How it works
+After trying out several options, I was able to find out that the responses for stations with no transfers are pretty straightforward, returning only results for the immediate incoming or outgoing subways (Usually returned 4 subways for Sinchon or Ewha Univ.) 
+
+However, once transfers were possible, the amount of trains returned would rise drastically. For example, Seoul Station returned an outstanding 19 trains, including trains from Line 4 (1004), Line 1 (1001), Airport Line(1065) and 경의중앙 (1063) Line. However, one thing to take into account in South Korean Metro lines is that there are two Seoul Station buildings and thus they are represented separately in the maps as well.
+
+![Seoul](../docs/static/2seouls.png)
+
+When testing with City Hall, Line 1 returned 8 trains while Line 2 returned 4 trains. We must find out why Line 1 has more trains than Line 2.
+
 
 ### Issues
 The Open API userguide would provide a different API from real time subway data. 'CardSubwayStats' would be called instead as follows:
