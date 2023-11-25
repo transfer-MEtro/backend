@@ -4,12 +4,23 @@ import pymysql
 bp = Blueprint('main', __name__, url_prefix='/')
 
 
-def db_connector():
+def init_db():
     db = pymysql.connect(host='127.0.0.1', port=3306, user='root',
-                         passwd='root123!', db='pbj_db', charset='utf8')
+                         passwd='root123!', db='metro_db', charset='utf8')
     cursor = db.cursor()
-    sql = '''SELECT * FROM pbj_db.Score;'''
-    cursor.execute(sql)
+    db_sql = '''CREATE DATABASE IF NOT EXISTS metro_db default CHARACTER SET UTF8;'''
+    table_sql = '''CREATE TABLE IF NOT EXISTS metro_db.Subway
+            (
+                btrainNo INT PRIMARY KEY,
+                subwayId INT NOT NULL,
+                statnFid INT NOT NULL,
+                statnTid INT NOT NULL,
+                statnId INT NOT NULL,
+                statnNm VARCHAR(32) NOT NULL,
+                barvlDt INT NOT NULL
+            ) ENGINE = INNODB;'''
+    cursor.execute(db_sql)
+    cursor.execute(table_sql)
     result = cursor.fetchall()
     db.close()
     return str(result)
@@ -17,8 +28,8 @@ def db_connector():
 
 @bp.route('/')
 def index():
-    a = db_connector()
-    return a
+    db_init = init_db()
+    return db_init
 
 
 @bp.route('/hello')
