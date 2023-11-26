@@ -5,18 +5,25 @@ import realtime_arrival_list
 bp = Blueprint('main', __name__, url_prefix='/')
 
 
-def insert_data():
+def insert_data(station):
     # Insert data into the table
     db = pymysql.connect(host='127.0.0.1', port=3306, user='root',
                          passwd='root123!', db='metro_db', charset='utf8')
     cursor = db.cursor()
 
     # Get the realtime arrival list
-    arrival_list = realtime_arrival_list.extract_json()
+    arrival_list = realtime_arrival_list.extract_json(station)
 
     insert_sql_template = '''INSERT INTO metro_db.Subway
                 (btrainNo, subwayId, statnFid, statnTid, statnId, statnNm, barvlDt)
-                VALUES (%s, %s, %s, %s, %s, %s, %s);'''
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                subwayId = VALUES(subwayId),
+                statnFid = VALUES(statnFid),
+                statnTid = VALUES(statnTid),
+                statnId = VALUES(statnId),
+                statnNm = VALUES(statnNm),
+                barvlDt = VALUES(barvlDt);'''
 
     for item in arrival_list:
         # Extract variables from each dictionary in the list
@@ -44,7 +51,7 @@ def init_db():
     db_sql = '''CREATE DATABASE IF NOT EXISTS metro_db default CHARACTER SET UTF8;'''
     table_sql = '''CREATE TABLE IF NOT EXISTS metro_db.Subway
             (
-                btrainNo INT PRIMARY KEY,
+                btrainNo VARCHAR(100) PRIMARY KEY,
                 subwayId INT NOT NULL,
                 statnFid INT NOT NULL,
                 statnTid INT NOT NULL,
@@ -71,9 +78,31 @@ def hello_flask():
 
 
 @bp.route('/insert')
-def bye_flask():
-    insert = insert_data()
+def insert():
+    insert = insert_data("신촌")
     return insert
+
+
+@bp.route('/insert/<line>')
+def insert_line(line):
+    line_2 = ['시청', '을지로입구', '을지로3가', '을지로4가', '동대문역사문화공원', '신당', '상왕십리', '왕십리', '한양대', '뚝섬', '성수', '건대입구', '구의', '강변', '잠실나루', '잠실', '잠실새내', '종합운동장', '삼성', '선릉', '역삼', '강남', '교대', '서초', '방배',
+              '사당', '낙성대', '서울대입구', '봉천', '신림', '신대방', '구로디지털단지', '대림', '신도림', '문래', '영등포구청', '당산', '합정', '홍대입구', '신촌', '이대', '아현', '충정로', '용답', '신답', '용두', '신설동', '도림천', '양천구청', '신정네거리', '까치산']
+    line_3 = ['대화', '주엽', '정발산', '마두', '백석', '대곡', '화정', '원당', '원흥', '삼송', '지축', '구파발', '연신내', '불광', '녹번', '홍제', '무악재', '독립문', '경복궁', '안국', '종로3가', '을지로3가',
+              '충무로', '동대입구', '약수', '금호', '옥수', '압구정', '신사', '잠원', '고속터미널', '교대', '남부터미널', '양재', '매봉', '도곡', '대치', '학여울', '대청', '일원', '수서', '가락시장', '경찰병원', '오금']
+
+    # Decide which line's data to insert based on the URL parameter
+    if line == '2':
+        for station in line_2:
+            insert_data(station)
+        return "Data inserted for line 2"
+
+    elif line == '3':
+        for station in line_3:
+            insert_data(station)
+        return "Data inserted for line 3"
+
+    else:
+        return "Invalid line number"
 
 
 @bp.route('/json_test')
