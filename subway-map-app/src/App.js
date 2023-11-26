@@ -1,24 +1,36 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
 import { ReactComponent as SubwayMap } from './map.svg';
 import './App.css';
 
 function App() {
+  const handleStationClick = (station) => {
+    console.log('Station clicked:', station);
+    // Add more logic here as needed
+  };
+
+  useEffect(() => {
+    // Delay execution to ensure SVG is fully loaded
+    setTimeout(() => {
+      const stations = document.querySelectorAll('.st25, .st45');
+
+      stations.forEach(station => {
+        station.addEventListener('click', () => handleStationClick(station));
+      });
+
+      // Clean up event listeners
+      return () => {
+        stations.forEach(station => {
+          station.removeEventListener('click', () => handleStationClick(station));
+        });
+      };
+    }, 500); // Delay of 500ms; adjust as needed
+  }, []);
+
+
   return (
     <div className="App">
       <header className="App-header">
         <SubwayMap className="Subway-map" />
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
       </header>
     </div>
   );
