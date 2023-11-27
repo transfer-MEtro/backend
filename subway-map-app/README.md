@@ -1,6 +1,10 @@
-# Getting Started with Create React App
+# Subway Map React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Station Interactivity
+![clickable_station](../docs/dynamic/interactive_station.gif)
+Clickable stations were implemented using a svg file of the Seoul subway map. Console logs are outputted every time a station is clicked.
 
 ## Available Scripts
 
