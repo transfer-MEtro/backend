@@ -1,11 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ReactComponent as SubwayMap } from './map.svg';
 import './App.css';
 
 function App() {
+  const [isMenuVisible, setMenuVisibility] = useState(false);
+  const [menuMessage, setMenuMessage] = useState('');
+
   const handleStationClick = (station) => {
     console.log('Station clicked:', station);
-    // Add more logic here as needed
+    setMenuMessage(`Station was clicked: ${station.getAttribute('class')}`);
+    setMenuVisibility(true);
   };
 
   useEffect(() => {
@@ -31,6 +35,12 @@ function App() {
     <div className="App">
       <header className="App-header">
         <SubwayMap className="Subway-map" />
+
+        {isMenuVisible && (
+          <div className="Menu">
+            {menuMessage}
+          </div>
+        )}
       </header>
     </div>
   );
