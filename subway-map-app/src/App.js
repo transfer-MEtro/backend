@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ReactComponent as SubwayMap } from './map.svg';
+import unescapeJs from 'unescape-js';
 import './App.css';
 
 function App() {
@@ -7,8 +8,13 @@ function App() {
   const [menuMessage, setMenuMessage] = useState('');
 
   const handleStationClick = (station) => {
-    console.log('Station clicked:', station);
-    setMenuMessage(`Station was clicked: ${station.getAttribute('class')}`);
+    console.log('홍대입구');
+    console.log('Station clicked:', station.getAttribute('data-station-name'));
+
+    const rawStationName = station.getAttribute('data-station-name');
+    const decodedStationName = unescapeJs(rawStationName);
+    console.log('Station clicked:', decodedStationName);
+    setMenuMessage(`Station was clicked: ${decodedStationName}`);
     setMenuVisibility(true);
   };
 
@@ -41,6 +47,7 @@ function App() {
             {menuMessage}
           </div>
         )}
+
       </header>
     </div>
   );
