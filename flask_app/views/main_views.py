@@ -1,18 +1,18 @@
 from flask import Blueprint, jsonify
 import pymysql
-import realtime_arrival_list
+from flask_app.realtime_arrival_list import extract_json
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
 
 def insert_data(station):
     # Insert data into the table
-    db = pymysql.connect(host='127.0.0.1', port=3306, user='root',
-                         passwd='root123!', db='metro_db', charset='utf8')
+    db = pymysql.connect(host='127.0.0.1', port=8200, user='root',
+                         passwd='root', db='metro_db', charset='utf8')
     cursor = db.cursor()
 
     # Get the realtime arrival list
-    arrival_list = realtime_arrival_list.extract_json(station)
+    arrival_list = extract_json(station)
 
     insert_sql_template = '''INSERT INTO metro_db.Subway
                 (btrainNo, subwayId, statnFid, statnTid, statnId, statnNm, barvlDt)
