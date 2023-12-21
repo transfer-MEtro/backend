@@ -17,13 +17,17 @@ class SingletonDatabase():
         print("Initializing database...")
 
         with self._db.cursor() as cursor:
-            db_sql = '''CREATE DATABASE IF NOT EXISTS pbj_db default CHARACTER SET UTF8;'''
-            table_sql = '''CREATE TABLE IF NOT EXISTS pbj_db.Score
-                    (
-                        id INT PRIMARY KEY AUTO_INCREMENT,
-                        name VARCHAR(100) NOT NULL,
-                        score INT NOT NULL
-                    ) ENGINE = INNODB DEFAULT CHARSET=utf8mb4;'''
+            db_sql = '''CREATE DATABASE IF NOT EXISTS metro_db default CHARACTER SET UTF8;'''
+            table_sql = '''CREATE TABLE metro_db.subway (
+                    `btrainNo` varchar(100) NOT NULL,
+                    `subwayId` int NOT NULL,
+                    `statnFid` int NOT NULL,
+                    `statnTid` int NOT NULL,
+                    `statnId` int NOT NULL,
+                    `statnNm` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                    `barvlDt` int NOT NULL,
+                    PRIMARY KEY (`btrainNo`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;'''
             cursor.execute(db_sql)
             cursor.execute(table_sql)
             # result = cursor.fetchall()
