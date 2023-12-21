@@ -1,11 +1,13 @@
 import os
 from flask import Blueprint, jsonify, redirect
+from flask_cors import CORS
 
 from ..domain.station_by_line import get_station_by_line
 from ..external_api.RealtimeArrival import RealtimeArrival
 from ..database.database import get_db
 
 bp = Blueprint('main', __name__, url_prefix='/')
+CORS(bp)
 
 
 @bp.route('/')
