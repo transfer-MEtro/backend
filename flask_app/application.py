@@ -1,11 +1,18 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask
-from flask_app.views import main_views
+
+from .views import main_views
 
 
-def create_app():
-    app = Flask(__name__)
+print("Initializing application...")
+load_dotenv()
 
-    # 블루프린트
-    app.register_blueprint(main_views.bp)
+SERVER_PORT = os.environ.get('SERVER_PORT')
 
-    return app
+application = Flask(__name__)
+application.register_blueprint(main_views.bp)
+
+
+if __name__ == "__main__":
+    application.run(port=SERVER_PORT)

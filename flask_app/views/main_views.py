@@ -1,15 +1,15 @@
 import os
 from flask import Blueprint, jsonify, redirect
 
-from flask_app.domain.station_by_line import get_station_by_line
-from flask_app.external_api.RealtimeArrival import RealtimeArrival
-from flask_app.database.database import get_db
+from ..domain.station_by_line import get_station_by_line
+from ..external_api.RealtimeArrival import RealtimeArrival
+from ..database.database import get_db
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
 
-@bp.route("/")
-def hello():
+@bp.route('/')
+def redirect_root():
     REDIRECT_URL = os.environ.get('REDIRECT_URL')
     return redirect(REDIRECT_URL, code=301)
 
