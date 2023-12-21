@@ -6,7 +6,8 @@ This app provides real time congestion information for the Seoul Metro lines and
 
 ```bash
 pip install -r requirements.txt
-flask --app main run
+cd flask_app
+flask --app application run
 ```
 
 ## Glossary
