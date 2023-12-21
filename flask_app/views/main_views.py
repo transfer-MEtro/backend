@@ -1,10 +1,48 @@
-from flask import Blueprint, jsonify
+import os
+from flask import Blueprint, jsonify, redirect
 
 from flask_app.domain.station_by_line import get_station_by_line
 from flask_app.external_api.RealtimeArrival import RealtimeArrival
 from flask_app.database.database import get_db
 
 bp = Blueprint('main', __name__, url_prefix='/')
+
+
+@bp.route("/")
+def hello():
+    REDIRECT_URL = os.environ.get('REDIRECT_URL')
+    return redirect(REDIRECT_URL, code=301)
+
+
+@bp.route('/lines')
+def get_lines():
+    return jsonify(get_station_by_line())
+
+
+@bp.route('/station/<station>')
+def get_realtime_arrival_by_station(station: str):
+    with get_db().cursor() as cursor:
+        sql = '''SELECT btrainNo, subwayId, statnFid, statnTid, statnId, statnNm, barvlDt FROM metro_db.Subway WHERE statnNm = %s;'''
+        cursor.execute(sql, (station,))
+        result = cursor.fetchall()
+
+        # Convert the result into a list of dictionaries
+        result_list = []
+        for item in result:
+
+            # Convert the tuple into a dictionary
+            item_dict = {
+                'trainNumber': item[0],
+                'subwayId': item[1],
+                'previousStationId': item[2],
+                'nextStationId': item[3],
+                'stationId': item[4],
+                'stationNumber': item[5],
+                'estimatedTimeArrival': item[6],
+            }
+            result_list.append(item_dict)
+
+        return jsonify(result_list)
 
 
 def insert_data(station):
