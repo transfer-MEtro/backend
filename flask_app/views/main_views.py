@@ -19,7 +19,38 @@ def get_lines():
     return jsonify(get_station_by_line())
 
 
-@bp.route('/station/<station>')
+@bp.route('/stations/<station>')
+def get_station(station: str):
+    with get_db().cursor() as cursor:
+        sql = '''SELECT btrainNo, subwayId, statnFid, statnTid, statnId, statnNm, barvlDt FROM metro_db.Subway WHERE statnNm = %s;'''
+        cursor.execute(sql, (station,))
+        result = cursor.fetchall()
+
+        # Convert the result into a list of dictionaries
+        result_list = []
+        for item in result:
+            train_id = item[0]
+            subway_id = item[1]
+
+            line_number = str(subway_id)[-1]
+
+            # Convert the tuple into a dictionary
+            item_dict = {
+                'trainId': train_id,
+                'subwayId': subway_id,
+                'previousStationId': item[2],
+                'nextStationId': item[3],
+                'stationId': item[4],
+                'stationName': item[5],
+                'estimatedTimeArrival': item[6],
+                'lineNumber': line_number,
+            }
+            result_list.append(item_dict)
+
+        return jsonify(result_list)
+
+
+@bp.route('/congestions/<station>')
 def get_realtime_arrival_by_station(station: str):
     with get_db().cursor() as cursor:
         sql = '''SELECT btrainNo, subwayId, statnFid, statnTid, statnId, statnNm, barvlDt FROM metro_db.Subway WHERE statnNm = %s;'''
@@ -29,16 +60,30 @@ def get_realtime_arrival_by_station(station: str):
         # Convert the result into a list of dictionaries
         result_list = []
         for item in result:
+            train_id = item[0]
+            subway_id = item[1]
+
+            line_number = str(subway_id)[-1]
+
+            congestions = []
+            try:
+                if line_number in ('2', '3'):
+                    congestions = RealtimeArrival().get_congestion_by_line_number_and_train_id(
+                        line_number, train_id)
+            except Exception as e:
+                print(e)
 
             # Convert the tuple into a dictionary
             item_dict = {
-                'trainNumber': item[0],
-                'subwayId': item[1],
+                'trainId': train_id,
+                'subwayId': subway_id,
                 'previousStationId': item[2],
                 'nextStationId': item[3],
                 'stationId': item[4],
-                'stationNumber': item[5],
+                'stationName': item[5],
                 'estimatedTimeArrival': item[6],
+                'lineNumber': line_number,
+                'congestions': congestions,
             }
             result_list.append(item_dict)
 
@@ -82,8 +127,7 @@ def insert_data(station):
 
 @bp.route('/insert')
 def insert():
-    insert = insert_data("신촌")
-    return insert
+    return insert_data("신촌")
 
 
 @bp.route('/insert/<line>')

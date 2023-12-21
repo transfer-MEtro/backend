@@ -18,7 +18,7 @@ class SingletonDatabase():
 
         with self._db.cursor() as cursor:
             db_sql = '''CREATE DATABASE IF NOT EXISTS metro_db default CHARACTER SET UTF8;'''
-            table_sql = '''CREATE TABLE metro_db.subway (
+            table_sql = '''CREATE TABLE IF NOT EXISTS metro_db.subway (
                     `btrainNo` varchar(100) NOT NULL,
                     `subwayId` int NOT NULL,
                     `statnFid` int NOT NULL,
