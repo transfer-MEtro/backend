@@ -11,6 +11,7 @@ class RealtimeArrivalApi:
         '''
         Document: https://data.seoul.go.kr/dataList/OA-12764/F/1/datasetView.do
         '''
+
         user_key = RealtimeArrivalApi.SEOUL_API_KEY
         url = f'http://swopenAPI.seoul.go.kr/api/subway/{user_key}/json/realtimeStationArrival/0/30/{station}'
 
@@ -24,6 +25,10 @@ class RealtimeArrivalApi:
         return realtime_arrival_list
 
     def get_congestion_by_line_number_and_train_id(self, line_number: str, train_id: str) -> list[int]:
+        '''
+        Document: https://openapi.sk.com/products/detail?svcSeq=54&menuSeq=312
+        '''
+
         url = f'https://apis.openapi.sk.com/puzzle/subway/congestion/rltm/trains/{line_number}/{train_id}'
 
         headers = {
