@@ -5,8 +5,8 @@ This app provides real time congestion information for the Seoul Metro lines and
 ## How to Run
 
 ```bash
-pip install -r requirements.txt
 cd flask_app
+pip install -r requirements.txt
 flask --app application run
 ```
 
