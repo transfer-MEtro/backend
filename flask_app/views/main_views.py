@@ -3,11 +3,15 @@ from flask import Blueprint, jsonify, redirect
 from flask_cors import CORS
 
 from ..domain.station_by_line import get_station_by_line
-from ..infra.RealtimeArrival import RealtimeArrival
+from ..infra.MetroModel import MetroModel
+from ..infra.RealtimeArrivalApi import RealtimeArrivalApi
 from ..database.database import get_db
 
 bp = Blueprint('main', __name__, url_prefix='/')
 CORS(bp)
+
+realtime_arrival_api = RealtimeArrivalApi()
+metro_model = MetroModel()
 
 
 @bp.route('/')
@@ -39,7 +43,7 @@ def _get_arrival(station: str) -> list[dict]:
     #     station_name = item[5]
     #     estimated_time_arrival = item[6]
 
-    arrivals = RealtimeArrival().get_realtime_arrival_by_station(station)
+    arrivals = realtime_arrival_api.get_realtime_arrival_by_station(station)
 
     for item in arrivals:
         train_id = item['btrainNo']
@@ -86,8 +90,10 @@ def list_congestions_by_station(station: str):
         congestions = []
         try:
             if line_number in ('2', '3'):
-                congestions = RealtimeArrival().get_congestion_by_line_number_and_train_id(
+                congestions = realtime_arrival_api.get_congestion_by_line_number_and_train_id(
                     line_number, train_id)
+            else:
+                congestions = metro_model.infer_congestion()
         except Exception as e:
             print(e)
 
@@ -98,7 +104,8 @@ def list_congestions_by_station(station: str):
 
 def insert_data(station):
     # Get the realtime arrival list
-    arrival_list = RealtimeArrival().get_realtime_arrival_by_station(station)
+    arrival_list = realtime_arrival_api.get_realtime_arrival_by_station(
+        station)
 
     with get_db().cursor() as cursor:
         # Insert data into the table

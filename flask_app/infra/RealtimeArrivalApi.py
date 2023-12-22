@@ -3,7 +3,7 @@ import requests
 import datetime
 
 
-class RealtimeArrival:
+class RealtimeArrivalApi:
     SEOUL_API_KEY = os.environ.get('SEOUL_API_KEY')
     SK_API_KEY = os.environ.get('SK_API_KEY')
 
@@ -11,7 +11,7 @@ class RealtimeArrival:
         '''
         Document: https://data.seoul.go.kr/dataList/OA-12764/F/1/datasetView.do
         '''
-        user_key = RealtimeArrival.SEOUL_API_KEY
+        user_key = RealtimeArrivalApi.SEOUL_API_KEY
         url = f'http://swopenAPI.seoul.go.kr/api/subway/{user_key}/json/realtimeStationArrival/0/30/{station}'
 
         response = requests.get(url)
@@ -29,7 +29,7 @@ class RealtimeArrival:
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "appKey": RealtimeArrival.SK_API_KEY,
+            "appKey": RealtimeArrivalApi.SK_API_KEY,
         }
 
         response = requests.get(url, headers=headers)
