@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, jsonify, redirect
-from flask_cors import CORS
+from flask_cors import cross_origin
 
 from ..domain.station_by_line import get_station_by_line
 from ..infra.MetroModel import MetroModel
@@ -8,19 +8,20 @@ from ..infra.RealtimeArrivalApi import RealtimeArrivalApi
 from ..database.database import get_db
 
 bp = Blueprint('main', __name__, url_prefix='/')
-CORS(bp)
 
 realtime_arrival_api = RealtimeArrivalApi()
 metro_model = MetroModel()
 
 
 @bp.route('/')
+@cross_origin()
 def redirect_root():
     REDIRECT_URL = os.environ.get('REDIRECT_URL')
     return redirect(REDIRECT_URL, code=301)
 
 
 @bp.route('/lines')
+@cross_origin()
 def get_lines():
     return jsonify(get_station_by_line())
 
@@ -75,12 +76,14 @@ def _get_arrival(station: str) -> list[dict]:
 
 
 @bp.route('/stations/<station>')
+@cross_origin()
 def get_arrival(station: str):
     result_list = _get_arrival(station)
     return jsonify(result_list)
 
 
 @bp.route('/congestions/<station>')
+@cross_origin()
 def list_congestions_by_station(station: str):
     result_list = _get_arrival(station)
     for item in result_list:
@@ -139,6 +142,7 @@ def insert_data(station):
 
 
 @bp.route('/insert/<line>')
+@cross_origin()
 def insert_line(line):
     # List of stations for each line
     line_map = get_station_by_line()
